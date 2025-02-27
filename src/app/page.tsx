@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const FunctionCard = ({ title, subtitle, imageAlt }: { title: string; subtitle?: string; imageAlt: string }) => {
   return (
@@ -60,13 +61,13 @@ export default function Home() {
           </svg>
           <div>Функции</div>
         </div>
-        <div className="footer-button">
+        <Link href="/profile" className="footer-button">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <circle cx="12" cy="8" r="4"></circle>
             <path d="M12 12c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z"></path>
           </svg>
           <div>Профиль</div>
-        </div>
+        </Link>
       </div>
     </div>
   );
