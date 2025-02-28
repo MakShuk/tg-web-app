@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const FunctionCard = ({ title, subtitle, imageAlt }: { title: string; subtitle?: string; imageAlt: string }) => {
   return (
-    <div className="card relative">
+    <div className="card relative cards-grid">
       <Image
         src="https://cs5.pikabu.ru/post_img/2015/06/04/11/1433446202_1725992411.jpg"
         alt={imageAlt}

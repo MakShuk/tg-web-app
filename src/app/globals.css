@@ -89,7 +89,8 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
   width: 100%;
-  margin-bottom: 80px; /* Для футера */
+  margin-bottom: 20px;
+  /* Для футера */
 }
 
 .card {
@@ -150,7 +151,8 @@ body {
 
 @media (min-width: 768px) {
   body {
-    padding-bottom: 80px; /* Компенсация высоты футера */
+    padding-bottom: 80px;
+    /* Компенсация высоты футера */
   }
 }
 
