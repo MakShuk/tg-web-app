@@ -1,27 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
-const FunctionCard = ({ title, subtitle, imageAlt }: { title: string; subtitle?: string; imageAlt: string }) => {
-  return (
-    <div className="card">
-      <div className="relative w-full h-[200px]">
-        <Image 
-          src="/api/placeholder/600/400"
-          alt={imageAlt}
-          fill
-          className="object-cover"
-        />
-      </div>
-      <svg className="star-icon" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
-      </svg>
-      <div className="card-content">
-        <div className="card-title">{title}</div>
-        {subtitle && <div className="card-subtitle">{subtitle}</div>}
-      </div>
-    </div>
-  );
-};
+import FunctionCard from "./components/function-card/function-card";
 
 export default function Home() {
   return (
