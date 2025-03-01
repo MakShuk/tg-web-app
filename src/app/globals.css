@@ -25,10 +25,6 @@
 }
 
 @layer components {
-  .container {
-    @apply w-full max-w-7xl mx-auto px-5;
-  }
-
   .header {
     @apply text-2xl font-bold mb-5;
   }
