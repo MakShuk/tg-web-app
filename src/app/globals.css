@@ -1,9 +1,6 @@
-@import "tailwindcss";
-
-@theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #121316;
@@ -13,117 +10,73 @@
   --text-secondary: #aaa;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-@media (max-width: 1200px) {
-  .container {
-    max-width: 960px;
+@layer base {
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
   }
 }
 
-@media (max-width: 992px) {
+@layer components {
   .container {
-    max-width: 720px;
+    @apply w-full max-w-7xl mx-auto px-5;
+  }
+
+  .header {
+    @apply text-2xl font-bold mb-5;
+  }
+
+  .tabs {
+    @apply flex gap-2.5 mb-5;
+  }
+
+  .tab {
+    @apply px-5 py-2.5 rounded-full cursor-pointer;
+  }
+
+  .tab.active {
+    background-color: var(--tab-active);
+  }
+
+  .tab.inactive {
+    @apply bg-white text-black;
+  }
+
+  .menu-item {
+    @apply flex items-center p-5 border-b border-white/5;
+  }
+
+  .menu-item-icon {
+    @apply w-6 h-6 mr-4 flex items-center justify-center;
+  }
+
+  .menu-item-text {
+    @apply flex-grow text-lg;
+  }
+
+  .menu-item-arrow {
+    @apply text-gray-600;
+  }
+
+  .section-divider {
+    @apply h-5;
+  }
+
+  .footer-link {
+    @apply px-5 py-4 text-[#4682B4] text-base cursor-pointer;
   }
 }
-
-@media (max-width: 768px) {
-  .container {
-    max-width: 540px;
-    padding: 0 15px;
-  }
-}
-
-@media (max-width: 576px) {
-  .container {
-    padding: 0 10px;
-  }
-}
-
-.header {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab {
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.tab.active {
-  background-color: var(--tab-active);
-}
-
-.tab.inactive {
-  background-color: white;
-  color: black;
-}
-
 
 @media (min-width: 768px) {
   body {
     padding-bottom: 80px;
     /* Компенсация высоты футера */
   }
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.menu-item-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.menu-item-text {
-  flex-grow: 1;
-  font-size: 18px;
-}
-
-.menu-item-arrow {
-  color: #666;
-}
-
-.section-divider {
-  height: 20px;
-}
-
-.footer-link {
-  padding: 15px 20px;
-  color: #4682B4;
-  font-size: 16px;
-  cursor: pointer;
 }

@@ -3,7 +3,7 @@ import styles from "./function-card.module.css";
 
 const FunctionCard = ({ title, subtitle, imageAlt }: { title: string; subtitle?: string; imageAlt: string }) => {
   return (
-    <div className={`${styles.card} ${styles.cardsGrid}`}>
+    <div className={styles.card}>
       <Image
         src="/1.jpg"
         alt={imageAlt}
