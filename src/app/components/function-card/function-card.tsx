@@ -5,7 +5,7 @@ const FunctionCard = ({ title, subtitle, imageAlt }: { title: string; subtitle?:
   return (
     <div className={`${styles.card} ${styles.cardsGrid}`}>
       <Image
-        src="https://cs5.pikabu.ru/post_img/2015/06/04/11/1433446202_1725992411.jpg"
+        src="/1.jpg"
         alt={imageAlt}
         fill
         className={styles.cardImage}
