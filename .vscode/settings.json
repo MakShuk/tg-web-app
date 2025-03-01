@@ -3,9 +3,16 @@
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
-        "**/CVS": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true
+        "**/Thumbs.db": true,
+        "**/CVS": true,
+        ".next": true,
+        ".vscode": true,
+        "node_modules": true
     },
-    "hide-files.files": []
+    "hide-files.files": [
+        ".next",
+        ".vscode",
+        "node_modules"
+    ]
 }

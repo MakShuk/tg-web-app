@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: productive-alfa-system
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./public:/app/public
+      # Добавьте другие необходимые тома здесь
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: productive-alfa-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d:ro
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    depends_on:
+      - nextjs-app
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: productive-alfa-certbot
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email your-email@example.com -d your-domain.com --agree-tos
+
+networks:
+  app-network:
+    driver: bridge

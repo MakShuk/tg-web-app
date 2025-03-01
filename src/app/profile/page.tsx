@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Footer from '../components/footer/footer';
 
 export default function ProfilePage() {
   return (
@@ -80,24 +81,7 @@ export default function ProfilePage() {
       
       <div className="footer-link">Пользовательское соглашение</div>
       
-      <div className="footer">
-        <Link href="/" className="footer-button">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-          <div>Функции</div>
-        </Link>
-        <div className="footer-button active">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M12 12c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6z" />
-          </svg>
-          <div>Профиль</div>
-        </div>
-      </div>
+       <Footer />
     </>
   );
 }
