@@ -1,10 +1,13 @@
-version: '3.8'
-
 services:
-  app:
+  tg-web-service:
     build: .
-    ports:
-      - "127.0.0.1:2999:2999"
     environment:
       - NODE_ENV=production
     restart: unless-stopped
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    name: nginx_network
+    driver: bridge
