@@ -1,9 +1,8 @@
 # Этап сборки
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json .npmrc ./
-RUN npm ci
 COPY . .
+RUN npm i
 RUN npm run build
 
 # Финальный образ
