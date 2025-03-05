@@ -1,26 +1,113 @@
-  name: Deploy to Production
+name: Deploy to Production
 
-  on:
-    push:
-      branches:
-        - main
-      tags:
-        - 'v*'
-  jobs:
-    deploy:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
 
-        - name: Setup SSH
-          uses: webfactory/ssh-agent@v0.5.4
-          with:
-            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    # Добавляем условие для пропуска выполнения
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    
+    # Добавляем переменные окружения на уровне job
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
 
-        - name: Deploy to Server
-          env:
-            DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-            DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-            DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          run: |
-            ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "rm -rf $DEPLOY_PATH && git clone https://github.com/MakShuk/tg-web-app.git $DEPLOY_PATH && cd $DEPLOY_PATH && docker compose down && docker compose up -d --build"
+    steps:
+      # Обновляем до последней версии checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Полная история для тегов
+      
+      # Добавляем кэширование node_modules
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Добавляем установку и проверку Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Добавляем проверку зависимостей
+      - name: Install dependencies
+        run: npm ci
+
+      # Добавляем проверку линтера
+      - name: Run linting
+        run: npm run lint || true  # не фейлим пайплайн из-за линтера
+
+      # Добавляем сборку проекта
+      - name: Build project
+        run: npm run build
+
+      # Обновляем SSH setup
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Улучшаем деплой с обработкой ошибок и проверками
+      - name: Deploy to Server
+        run: |
+          # Добавляем обработку ошибок
+          set -e
+          
+          # Функция для логирования
+          log() {
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
+          }
+          
+          # Проверяем доступность сервера
+          if ! ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 $DEPLOY_USER@$DEPLOY_HOST "exit"; then
+            log "ERROR: Cannot connect to server"
+            exit 1
+          fi
+          
+          # Создаем бэкап текущей версии
+          ssh $DEPLOY_USER@$DEPLOY_HOST "if [ -d $DEPLOY_PATH ]; then cp -r $DEPLOY_PATH ${DEPLOY_PATH}_backup_$(date +%Y%m%d_%H%M%S); fi"
+          
+          # Деплоим новую версию
+          log "Starting deployment..."
+          ssh $DEPLOY_USER@$DEPLOY_HOST "rm -rf $DEPLOY_PATH && \
+            git clone https://github.com/MakShuk/tg-web-app.git $DEPLOY_PATH && \
+            cd $DEPLOY_PATH && \
+            docker compose down --remove-orphans && \
+            docker compose up -d --build"
+          
+          # Проверяем статус контейнеров
+          if ! ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && docker compose ps | grep -q 'Up'"; then
+            log "ERROR: Containers failed to start"
+            # Восстанавливаем из бэкапа
+            ssh $DEPLOY_USER@$DEPLOY_HOST "rm -rf $DEPLOY_PATH && mv ${DEPLOY_PATH}_backup_* $DEPLOY_PATH"
+            exit 1
+          fi
+          
+          log "Deployment completed successfully"
+          
+          # Очищаем старые бэкапы (оставляем только 3 последних)
+          ssh $DEPLOY_USER@$DEPLOY_HOST "cd $(dirname $DEPLOY_PATH) && ls -dt ${DEPLOY_PATH}_backup_* 2>/dev/null | tail -n +4 | xargs -r rm -rf"
+
+      # Добавляем уведомление о результате
+      - name: Notify about deployment
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "🎉 Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+          fi
