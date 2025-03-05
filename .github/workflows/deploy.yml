@@ -22,4 +22,4 @@
              DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
              DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
            run: |
-             ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "rm -rf $DEPLOY_PATH/* && git clone https://github.com/MakShuk/tg-web-app.git $DEPLOY_PATH && cd $DEPLOY_PATH && docker compose down && docker compose up -d --build"
+             ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "rm -rf $DEPLOY_PATH && git clone https://github.com/MakShuk/tg-web-app.git $DEPLOY_PATH && cd $DEPLOY_PATH && docker compose down && docker compose up -d --build"
